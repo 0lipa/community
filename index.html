@@ -33,11 +33,6 @@
       </section>
 
       <section class="screen screen--test" id="testScreen" aria-labelledby="questionTitle" hidden>
-        <div class="choice-reveal" id="choiceReveal" aria-hidden="true">
-          <span class="choice-reveal__label">YOUR CHOICE</span>
-          <strong class="choice-reveal__text" id="choiceRevealText">예</strong>
-          <span class="choice-reveal__hint">선택이 결정됩니다</span>
-        </div>
         <header class="test-header">
           <button class="icon-button" id="restartButton" type="button" aria-label="처음으로 돌아가기">×</button>
           <div class="progress-wrap">
@@ -59,6 +54,11 @@
               <span class="drag-mark" aria-hidden="true">↔</span>
             </div>
           </article>
+          <div class="choice-reveal" id="choiceReveal" aria-hidden="true">
+            <span class="choice-reveal__label">YOUR CHOICE</span>
+            <strong class="choice-reveal__text" id="choiceRevealText">예</strong>
+            <span class="choice-reveal__hint">선택이 결정됩니다</span>
+          </div>
         </div>
         <p class="swipe-hint" id="swipeHint">카드를 좌우로 넘기거나 아래 버튼을 눌러요</p>
         <div class="answer-buttons">
