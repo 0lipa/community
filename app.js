@@ -21,6 +21,15 @@ const profiles = {
   '원칙형|결단형|기여형': { title: '결단형 승부사', description: '목표와 책임을 선명하게 보고, 필요한 순간에는 단호하게 방향을 정합니다.', prompt: '팀 성과를 위해 일부의 불만은 감수할 수 있을까?' }
 };
 
+const keywordDescriptions = {
+  '공감형': '사람의 사정과 관계의 균형을 먼저 살펴요.',
+  '원칙형': '모두에게 적용할 수 있는 기준과 약속을 중요하게 생각해요.',
+  '숙의형': '다양한 의견을 충분히 듣고 함께 답을 찾으려 해요.',
+  '결단형': '필요한 순간 빠르게 방향을 정하고 움직여요.',
+  '공유형': '누구도 소외되지 않도록 기회와 자원을 넓게 나눠요.',
+  '기여형': '책임과 기여에 맞는 공정한 분배를 중요하게 생각해요.'
+};
+
 const $ = (selector) => document.querySelector(selector);
 const screens = { intro: $('#introScreen'), test: $('#testScreen'), result: $('#resultScreen') };
 const nicknameForm = $('#nicknameForm');
@@ -110,6 +119,17 @@ function renderResult() {
     item.textContent = keyword;
     return item;
   }));
+  const keywordExplanations = $('#keywordExplanations');
+  keywordExplanations.replaceChildren(...keywords.map((keyword) => {
+    const item = document.createElement('div');
+    item.className = 'keyword-explanation';
+    const name = document.createElement('strong');
+    name.textContent = keyword;
+    const description = document.createElement('p');
+    description.textContent = keywordDescriptions[keyword];
+    item.append(name, description);
+    return item;
+  }));
   localStorage.setItem('communityCompassResult', JSON.stringify({ nickname: state.nickname, answers: state.answers, savedAt: Date.now() }));
   showScreen('result');
 }
@@ -175,9 +195,9 @@ $('#reviewModal').addEventListener('click', (event) => { if (event.target === $(
 $('#shareButton').addEventListener('click', async () => {
   const keywords = deriveKeywords();
   const profile = profiles[keywords.join('|')];
-  const text = `${state.nickname}님의 커뮤니티 나침반: ${profile.title} (${keywords.join(' · ')})`;
+  const text = `${state.nickname}님의 선택 나침반: ${profile.title} (${keywords.join(' · ')})`;
   try {
-    if (navigator.share) await navigator.share({ title: '커뮤니티 나침반', text });
+    if (navigator.share) await navigator.share({ title: '선택 나침반', text });
     else { await navigator.clipboard.writeText(text); showToast('결과가 클립보드에 복사됐어요.'); }
   } catch (error) { if (error.name !== 'AbortError') showToast('공유를 다시 시도해 주세요.'); }
 });
