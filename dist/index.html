@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8f5ff" />
+    <meta name="description" content="9개의 선택으로 나만의 커뮤니티 스타일을 발견하는 회식용 카드 테스트" />
+    <title>커뮤니티 나침반</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app-shell" aria-live="polite">
+      <section class="screen screen--intro is-active" id="introScreen" aria-labelledby="introTitle">
+        <div class="floating-shape shape--one" aria-hidden="true"></div>
+        <div class="floating-shape shape--two" aria-hidden="true"></div>
+        <div class="intro-hero">
+          <span class="eyebrow">DINNER TALK TEST</span>
+          <div class="hero-orbit" aria-hidden="true">
+            <span>✦</span><span>☁</span><span>✧</span>
+          </div>
+          <h1 id="introTitle">오늘, 우리는<br /><em>어떤 커뮤니티</em>를<br />만들까요?</h1>
+          <p>9장의 카드에 답하고<br />나만의 선택 나침반을 찾아보세요.</p>
+        </div>
+        <form class="nickname-form" id="nicknameForm">
+          <label for="nickname">오늘의 닉네임</label>
+          <div class="input-row">
+            <input id="nickname" name="nickname" type="text" maxlength="12" autocomplete="nickname" placeholder="예: 귀여운 전략가" required />
+            <span class="input-sparkle" aria-hidden="true">✦</span>
+          </div>
+          <button class="button button--primary" type="submit">카드 받기 <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="privacy-note">답변은 이 기기의 브라우저에만 저장돼요.</p>
+      </section>
+
+      <section class="screen screen--test" id="testScreen" aria-labelledby="questionTitle" hidden>
+        <header class="test-header">
+          <button class="icon-button" id="restartButton" type="button" aria-label="처음으로 돌아가기">×</button>
+          <div class="progress-wrap">
+            <span id="progressLabel">1 / 9</span>
+            <div class="progress-track" aria-hidden="true"><div class="progress-value" id="progressValue"></div></div>
+          </div>
+          <button class="icon-button icon-button--muted" id="undoButton" type="button" aria-label="이전 답변으로 돌아가기" disabled>↶</button>
+        </header>
+
+        <div class="axis-label" id="axisLabel">관계의 기준</div>
+        <div class="card-stage" id="cardStage">
+          <article class="question-card" id="questionCard" tabindex="0" aria-describedby="swipeHint">
+            <div class="card-ornament" aria-hidden="true">✦</div>
+            <span class="question-number" id="questionNumber">QUESTION 01</span>
+            <p class="question-axis" id="questionAxis">관계의 기준</p>
+            <h2 id="questionTitle"></h2>
+            <div class="card-footer">
+              <span>당신의 첫 선택은?</span>
+              <span class="drag-mark" aria-hidden="true">↔</span>
+            </div>
+          </article>
+          <div class="choice-badge choice-badge--no" id="noBadge" aria-hidden="true">아니오</div>
+          <div class="choice-badge choice-badge--yes" id="yesBadge" aria-hidden="true">예</div>
+        </div>
+        <p class="swipe-hint" id="swipeHint">카드를 좌우로 넘기거나 아래 버튼을 눌러요</p>
+        <div class="answer-buttons">
+          <button class="button button--no" id="noButton" type="button"><span aria-hidden="true">←</span> 아니오</button>
+          <button class="button button--yes" id="yesButton" type="button">예 <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section class="screen screen--result" id="resultScreen" aria-labelledby="resultTitle" hidden>
+        <div class="result-top">
+          <span class="eyebrow">YOUR COMMUNITY COMPASS</span>
+          <p class="result-for"><strong id="resultNickname"></strong>님의 커뮤니티 스타일</p>
+        </div>
+        <article class="result-card">
+          <div class="result-stars" aria-hidden="true">✦ · ✧ · ✦</div>
+          <p class="archetype-kicker">오늘의 역할</p>
+          <h2 id="resultTitle"></h2>
+          <p class="result-description" id="resultDescription"></p>
+          <div class="keyword-list" id="keywordList"></div>
+          <div class="talk-prompt">
+            <span aria-hidden="true">💬</span>
+            <div><strong>회식 토론 카드</strong><p id="talkPrompt"></p></div>
+          </div>
+        </article>
+        <div class="result-actions">
+          <button class="button button--primary" id="reviewButton" type="button">내 선택 다시 보기 <span aria-hidden="true">↗</span></button>
+          <button class="text-button" id="shareButton" type="button">결과 공유하기</button>
+          <button class="text-button text-button--quiet" id="newTestButton" type="button">다른 닉네임으로 다시 하기</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="reviewModal" hidden>
+      <section class="review-sheet" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+        <header class="review-header">
+          <div><span class="eyebrow">MY 9 CHOICES</span><h2 id="reviewTitle">내 선택 다시 보기</h2></div>
+          <button class="icon-button" id="closeReviewButton" type="button" aria-label="선택 다시 보기 닫기">×</button>
+        </header>
+        <p class="review-intro">답을 다시 눌러도 결과는 바뀌지 않아요. 오늘의 선택을 천천히 비교해 보세요.</p>
+        <div class="review-list" id="reviewList"></div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
