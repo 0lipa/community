@@ -51,6 +51,8 @@ function renderQuestion({ animate = false } = {}) {
   $('#undoButton').disabled = state.index === 0;
   questionCard.className = `question-card${animate ? ' is-entering' : ''}`;
   questionCard.style.transform = '';
+  questionCard.style.removeProperty('--swipe-x');
+  questionCard.style.removeProperty('--swipe-rotate');
   clearChoiceReveal();
 }
 
@@ -189,7 +191,9 @@ questionCard.addEventListener('pointerdown', (event) => {
 questionCard.addEventListener('pointermove', (event) => {
   if (!state.dragging) return;
   const delta = event.clientX - state.dragStartX;
-  const rotate = Math.max(-12, Math.min(12, delta / 18));
+  const rotate = Math.max(-18, Math.min(18, delta / 8));
+  questionCard.style.setProperty('--swipe-x', `${delta}px`);
+  questionCard.style.setProperty('--swipe-rotate', `${rotate}deg`);
   questionCard.style.transform = `translateX(${delta}px) rotate(${rotate}deg)`;
   showChoiceReveal(delta >= 0 ? 'yes' : 'no', Math.min(1, Math.abs(delta) / 110));
 });
@@ -197,10 +201,14 @@ function finishDrag(event) {
   if (!state.dragging) return;
   const delta = event.clientX - state.dragStartX;
   state.dragging = false;
-  questionCard.style.transform = '';
   if (delta > 72) choose('yes');
   else if (delta < -72) choose('no');
-  else clearChoiceReveal();
+  else {
+    questionCard.style.transform = '';
+    questionCard.style.removeProperty('--swipe-x');
+    questionCard.style.removeProperty('--swipe-rotate');
+    clearChoiceReveal();
+  }
 }
 questionCard.addEventListener('pointerup', finishDrag);
 questionCard.addEventListener('pointercancel', finishDrag);
