@@ -26,6 +26,8 @@ const screens = { intro: $('#introScreen'), test: $('#testScreen'), result: $('#
 const nicknameForm = $('#nicknameForm');
 const nicknameInput = $('#nickname');
 const questionCard = $('#questionCard');
+const choiceReveal = $('#choiceReveal');
+const choiceRevealText = $('#choiceRevealText');
 const state = { nickname: '', index: 0, answers: [], dragStartX: 0, dragging: false };
 let toastTimer;
 
@@ -49,13 +51,26 @@ function renderQuestion({ animate = false } = {}) {
   $('#undoButton').disabled = state.index === 0;
   questionCard.className = `question-card${animate ? ' is-entering' : ''}`;
   questionCard.style.transform = '';
-  $('#yesBadge').style.opacity = 0;
-  $('#noBadge').style.opacity = 0;
+  clearChoiceReveal();
+}
+
+function showChoiceReveal(answer, strength) {
+  const clampedStrength = Math.max(0, Math.min(1, strength));
+  choiceReveal.dataset.choice = answer;
+  choiceRevealText.textContent = answer === 'yes' ? '예' : '아니오';
+  choiceReveal.style.setProperty('--choice-strength', clampedStrength.toFixed(2));
+  choiceReveal.style.setProperty('--choice-blur', `${(clampedStrength * 11).toFixed(1)}px`);
+}
+
+function clearChoiceReveal() {
+  choiceReveal.style.setProperty('--choice-strength', '0');
+  choiceReveal.style.setProperty('--choice-blur', '0px');
 }
 
 function choose(answer) {
   if (state.dragging || questionCard.classList.contains('is-leaving-left') || questionCard.classList.contains('is-leaving-right')) return;
   state.answers[state.index] = answer;
+  showChoiceReveal(answer, 1);
   const leavingClass = answer === 'yes' ? 'is-leaving-right' : 'is-leaving-left';
   questionCard.classList.add(leavingClass);
   navigator.vibrate?.(12);
@@ -63,7 +78,7 @@ function choose(answer) {
     state.index += 1;
     if (state.index >= questions.length) renderResult();
     else renderQuestion({ animate: true });
-  }, 305);
+  }, 380);
 }
 
 function deriveKeywords() {
@@ -176,18 +191,16 @@ questionCard.addEventListener('pointermove', (event) => {
   const delta = event.clientX - state.dragStartX;
   const rotate = Math.max(-12, Math.min(12, delta / 18));
   questionCard.style.transform = `translateX(${delta}px) rotate(${rotate}deg)`;
-  $('#yesBadge').style.opacity = Math.max(0, Math.min(1, delta / 90));
-  $('#noBadge').style.opacity = Math.max(0, Math.min(1, -delta / 90));
+  showChoiceReveal(delta >= 0 ? 'yes' : 'no', Math.min(1, Math.abs(delta) / 110));
 });
 function finishDrag(event) {
   if (!state.dragging) return;
   const delta = event.clientX - state.dragStartX;
   state.dragging = false;
   questionCard.style.transform = '';
-  $('#yesBadge').style.opacity = 0;
-  $('#noBadge').style.opacity = 0;
   if (delta > 72) choose('yes');
   else if (delta < -72) choose('no');
+  else clearChoiceReveal();
 }
 questionCard.addEventListener('pointerup', finishDrag);
 questionCard.addEventListener('pointercancel', finishDrag);
