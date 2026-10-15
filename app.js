@@ -53,9 +53,7 @@ function renderQuestion({ animate = false } = {}) {
   const question = questions[state.index];
   $('#progressLabel').textContent = `${state.index + 1} / ${questions.length}`;
   $('#progressValue').style.width = `${((state.index + 1) / questions.length) * 100}%`;
-  $('#axisLabel').textContent = question.axis;
   $('#questionNumber').textContent = `QUESTION ${String(state.index + 1).padStart(2, '0')}`;
-  $('#questionAxis').textContent = question.axis;
   $('#questionTitle').textContent = question.statement;
   $('#undoButton').disabled = state.index === 0;
   questionCard.className = `question-card${animate ? ' is-entering' : ''}`;
@@ -111,7 +109,6 @@ function renderResult() {
   $('#resultNickname').textContent = state.nickname;
   $('#resultTitle').textContent = profile.title;
   $('#resultDescription').textContent = profile.description;
-  $('#talkPrompt').textContent = profile.prompt;
   const keywordList = $('#keywordList');
   keywordList.replaceChildren(...keywords.map((keyword) => {
     const item = document.createElement('span');
@@ -141,7 +138,7 @@ function renderReview() {
     const item = document.createElement('article');
     item.className = 'review-item';
     item.innerHTML = `
-      <div class="review-item-top"><span>QUESTION ${String(index + 1).padStart(2, '0')}</span><span class="review-axis">${question.axis}</span></div>
+      <div class="review-item-top"><span>QUESTION ${String(index + 1).padStart(2, '0')}</span></div>
       <p class="review-question"></p>
       <span class="review-choice review-choice--${answer}">${answer === 'yes' ? '✦ 예' : '× 아니오'}</span>
       <p class="review-meaning">${answer === 'yes' ? question.yes : question.no}</p>`;
